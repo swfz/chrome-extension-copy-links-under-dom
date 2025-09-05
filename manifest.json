@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DOM Link Extractor",
-  "version": "1.3",
+  "version": "1.0.3",
   "description": "Highlights a DOM element on hover and extracts all links from within it on click.",
   "permissions": [
     "activeTab",
