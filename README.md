@@ -1,4 +1,4 @@
-# Copy Links Under Dom
+# chrome-extension-dom-links-extractor
 
 指定のDOM以下のAタグ内のリンクURLを改行区切りでクリップボードにコピーするChrome拡張
 
