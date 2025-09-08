@@ -4,6 +4,26 @@ if (typeof window.domLinkExtractor_hasBeenInjected === 'undefined') {
 
   let lastElement = null;
   let isActive = false;
+  let popup = null;
+
+  // ポップアップを作成・表示
+  const showLinkCountPopup = (x, y, linkCount) => {
+    hidePopup();
+    popup = document.createElement('div');
+    popup.className = 'link-count-popup';
+    popup.textContent = `Links: ${linkCount}`;
+    popup.style.left = `${x + 10}px`;
+    popup.style.top = `${y - 30}px`;
+    document.body.appendChild(popup);
+  };
+
+  // ポップアップを非表示
+  const hidePopup = () => {
+    if (popup) {
+      popup.remove();
+      popup = null;
+    }
+  };
 
   // マウスオーバー時のハイライト処理
   const onMouseOver = (event) => {
@@ -14,6 +34,11 @@ if (typeof window.domLinkExtractor_hasBeenInjected === 'undefined') {
     const targetElement = event.target;
     targetElement.classList.add('inspector-highlight');
     lastElement = targetElement;
+
+    // リンク数をカウントしてポップアップ表示
+    const links = targetElement.querySelectorAll('a');
+    const linkCount = Array.from(links).filter(a => a.href).length;
+    showLinkCountPopup(event.clientX, event.clientY, linkCount);
   };
 
   // クリック時のリンク抽出処理
@@ -56,6 +81,7 @@ if (typeof window.domLinkExtractor_hasBeenInjected === 'undefined') {
     isActive = false;
     document.removeEventListener('mouseover', onMouseOver, true);
     document.removeEventListener('click', onClick, true);
+    hidePopup();
     if (lastElement) {
       lastElement.classList.remove('inspector-highlight');
       lastElement = null;
