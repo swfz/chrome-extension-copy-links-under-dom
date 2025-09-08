@@ -5,6 +5,45 @@ if (typeof window.domLinkExtractor_hasBeenInjected === 'undefined') {
   let lastElement = null;
   let isActive = false;
   let popup = null;
+  let toastContainer = null;
+  const toastLifespanMs = 2600;
+
+  // トースト用DOMの用意
+  const ensureToastContainer = () => {
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.className = 'link-toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    return toastContainer;
+  };
+
+  const showToast = (message, type = 'success') => {
+    const container = ensureToastContainer();
+    const toast = document.createElement('div');
+    toast.className = `link-toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // アニメーション開始
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+    });
+
+    // 一定時間後に消える
+    const remove = () => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toast.remove();
+        if (toastContainer && toastContainer.childElementCount === 0) {
+          toastContainer.remove();
+          toastContainer = null;
+        }
+      }, 180);
+    };
+
+    setTimeout(remove, toastLifespanMs);
+  };
 
   // ポップアップを作成・表示
   const showLinkCountPopup = (x, y, linkCount) => {
@@ -55,11 +94,14 @@ if (typeof window.domLinkExtractor_hasBeenInjected === 'undefined') {
     if (resultText) {
       navigator.clipboard.writeText(resultText).then(() => {
         console.log('以下のリンクをクリップボードにコピーしました:', resultText);
+        showToast(`コピーしました（${hrefs.length}件）`, 'success');
       }).catch(err => {
         console.error('クリップボードへのコピーに失敗しました: ', err);
+        showToast(`コピーに失敗しました: ${err && err.message ? err.message : err}`, 'error');
       });
     } else {
       console.log('選択された要素内にリンクは見つかりませんでした。');
+      showToast('選択範囲にリンクが見つかりません', 'error');
     }
     
     // 処理後に機能を停止
