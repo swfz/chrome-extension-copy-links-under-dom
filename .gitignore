@@ -20,3 +20,5 @@ Thumbs.db
 # Env files (precaution)
 .env
 .env.*
+
+content.bundle.js
