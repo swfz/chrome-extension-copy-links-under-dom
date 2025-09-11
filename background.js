@@ -12,18 +12,19 @@ chrome.action.onClicked.addListener((tab) => {
     files: ["inspector.css"],
   });
 
-  // 2. コンテンツスクリプトを注入
+  // 2. JSを能動注入してからアクティベートメッセージを送信
   chrome.scripting.executeScript(
     {
       target: { tabId: tab.id },
-      files: ["content.js"],
+      files: ["content.bundle.js"],
     },
     () => {
-      // 3. スクリプトの注入完了後、アクティベートメッセージを送信
-      // これで受信側が必ず存在することを保証する
-      chrome.tabs.sendMessage(tab.id, { action: "activate_inspector" }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+        return;
+      }
+      chrome.tabs.sendMessage(tab.id, { action: "activate_inspector" }, () => {
         if (chrome.runtime.lastError) {
-          // メッセージ送信でエラーが起きた場合のフォールバック
           console.error(chrome.runtime.lastError.message);
         }
       });
