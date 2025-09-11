@@ -56,7 +56,9 @@ jobs:
       - name: Package extension ZIP
         shell: bash
         run: |
-          ZIP_NAME="dom-links-extractor-${GITHUB_SHA::7}.zip"
+          ZIP_BASENAME="dom-links-extractor-${GITHUB_SHA::7}"
+          ZIP_NAME="$ZIP_BASENAME.zip"
+          echo "ZIP_BASENAME=$ZIP_BASENAME" >> $GITHUB_ENV
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
           zip -r "$ZIP_NAME" . \
             -x ".git*" \
@@ -72,7 +74,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ZIP_NAME }}
+          name: ${{ env.ZIP_BASENAME }}
           path: ${{ env.ZIP_NAME }}
           if-no-files-found: error
           retention-days: 7
