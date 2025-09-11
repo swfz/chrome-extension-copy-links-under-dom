@@ -1,0 +1,21 @@
+{
+  "name": "dom-links-extractor",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Dev/test scaffolding for DOM Links Extractor",
+  "scripts": {
+    "test": "vitest --run --pool=vmThreads",
+    "build": "esbuild content.js --bundle --format=iife --target=chrome100 --outfile=content.bundle.js --sourcemap",
+    "dev": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.5",
+    "jsdom": "^24.0.0",
+    "esbuild": "^0.23.0"
+  },
+  "vitest": {
+    "test": {
+      "environment": "jsdom"
+    }
+  }
+}
